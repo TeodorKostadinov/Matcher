@@ -51,7 +51,18 @@ public class GameplayActivity extends AppCompatActivity {
                 final String name = edtName.getText().toString();
             }
         });
-        ((GameView) findViewById(R.id.game_view)).setGameManager(new MatcherManager());
+        MatcherManager matcherManager = new MatcherManager();
+        matcherManager.setOnGameEndListener(new MatcherManager.OnGameEndListener() {
+            @Override
+            public void onGameEnded(boolean isSuccess) {
+                if(isSuccess) {
+                    Toast.makeText(GameplayActivity.this, "Good job", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(GameplayActivity.this, "You suck", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        ((GameView) findViewById(R.id.game_view)).setGameManager(matcherManager);
     }
 
     private double getTime(){
