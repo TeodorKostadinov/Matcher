@@ -49,26 +49,9 @@ public class GameplayActivity extends AppCompatActivity {
                 btnTryAgain.setClickable(false);
                 edtName.setClickable(false);
                 final String name = edtName.getText().toString();
-                writeRecord(name);
             }
         });
-        createNewGame();
-    }
-
-    private void writeRecord(final String name){
-        AsyncTask <Void, Void, Void> as = new AsyncTask() {
-            @Override
-            protected Void doInBackground(Object[] params) {
-                User user = new User(name, gameHelper.getPoints(), getTime());
-                dbHelper.writeToDatabase(user);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                createNewGame();
-            }
-        }.execute();
+        ((GameView) findViewById(R.id.game_view)).setGameManager(new MatcherManager());
     }
 
     private double getTime(){
@@ -76,34 +59,5 @@ public class GameplayActivity extends AppCompatActivity {
         return time / 1000;
     }
 
-    private void createNewGame(){
-        for(int i = 0; i < 36; i++){
-            final Button btn = (Button) relative.getChildAt(i);
-            btn.setBackgroundResource(Block.getRandomColor());
-            btn.setVisibility(View.VISIBLE);
-            final int finalI = i;
-            final ColorDrawable cd = (ColorDrawable) btn.getBackground();
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gameHelper.removeConnectedBlocks(finalI, cd.getColor());
-                    gameHelper.adjustBlocks();
-                    if(!gameHelper.checkForPossibleMoves()){
-                        endTime = System.currentTimeMillis();
-                        if(relative.getChildAt(30).getVisibility() == View.INVISIBLE) {
-                            txtGameOver.setText("CONGRATULATIONS!");
-                        } else {
-                            txtGameOver.setText("GAME OVER!");
-                        }
-                        txtGameOver.setVisibility(View.VISIBLE);
-                        btnTryAgain.setVisibility(View.VISIBLE);
-                        edtName.setVisibility(View.VISIBLE);
-                        btnTryAgain.setClickable(true);
-                        edtName.setClickable(true);
-                    }
-                }
-            });
-        }
-        startTime = System.currentTimeMillis();
-    }
+
 }

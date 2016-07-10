@@ -2,6 +2,7 @@ package com.vratsasoftware.adroid.matcher.game_logic;
 
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 public class GameHelper {
@@ -121,18 +122,24 @@ public class GameHelper {
         }
     }
 
-    private void fallDownOneLine(int pos, Button btn, ColorDrawable cd){
+    private void fallDownOneLine(int pos, Button btnBelow, ColorDrawable cd){
         if(isInside(pos - 6)){
-            if(relative.getChildAt(pos - 6).getVisibility() == View.INVISIBLE){
-                btn.setVisibility(View.INVISIBLE);
+            View btnAbove = relative.getChildAt(pos - 6);
+            TranslateAnimation moveDown = new TranslateAnimation(0, 0, 0, btnAbove.getY());
+            moveDown.setDuration(500);
+            btnAbove.startAnimation(moveDown);
+
+            if(btnAbove.getVisibility() == View.INVISIBLE){
+                btnBelow.setVisibility(View.INVISIBLE);
                 return;
             }
-            cd = (ColorDrawable) relative.getChildAt(pos - 6).getBackground();
-            btn.setVisibility(View.VISIBLE);
-            btn.setBackgroundColor(cd.getColor());
-            btn = (Button) relative.getChildAt(pos - 6);
-            btn.setVisibility(View.INVISIBLE);
-            fallDownOneLine(pos - 6, btn, cd);
+            ColorDrawable colorDrawable = (ColorDrawable) btnAbove.getBackground();
+            //Button below get color of button above
+            btnBelow.setVisibility(View.VISIBLE);
+            btnBelow.setBackgroundColor(colorDrawable.getColor());
+
+            btnAbove.setVisibility(View.INVISIBLE);
+            fallDownOneLine(pos - 6, btnBelow, colorDrawable);
         }
     }
 
