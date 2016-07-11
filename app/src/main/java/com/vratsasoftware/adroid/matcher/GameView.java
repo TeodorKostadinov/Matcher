@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.vratsasoftware.adroid.matcher.cmn.Block;
+
 import java.util.Random;
 
 /**
@@ -14,10 +16,10 @@ import java.util.Random;
  */
 public class GameView extends View {
 
-    private static final int EMPTY = -1;
+    private static final int EMPTY = Block.COLOR_NONE;
 
     private int[] COLORS;
-    private int[][] board;
+    private Block[][] board;
     private int boardX;
     private int boardY;
     private GameManager gameManager;
@@ -64,9 +66,10 @@ public class GameView extends View {
     private void drawBoard(Canvas canvas) {
         for (int x = 0; x < boardX; x++) {
             for (int y = 0; y < boardY; y++) {
-                if(board[x][y] != EMPTY) {
-                    paint.setColor(board[x][y]);
-                    canvas.drawRect(x * boxSizePx, y * boxSizePx, (x + 1) * boxSizePx, (y + 1) * boxSizePx, paint);
+                Block block = board[x][y];
+                if(block.color != EMPTY) {
+                    paint.setColor(block.color);
+                    canvas.drawRect(block.visibleX * boxSizePx, block.visibleY * boxSizePx, (block.visibleX + 1) * boxSizePx, (block.visibleY + 1) * boxSizePx, paint);
                 }
             }
         }
@@ -81,7 +84,7 @@ public class GameView extends View {
     }
 
     private void handleTouch(int x, int y) {
-        if(board[x][y] != EMPTY) {
+        if(board[x][y].color != EMPTY) {
             if(gameManager != null) {
                 board = gameManager.resolveBoard(x, y, board);
             }
@@ -103,11 +106,17 @@ public class GameView extends View {
 
     private void initBoard() {
         Random rnd = new Random();
-        board = new int[boardX][boardY];
-        for (int i = 0; i < boardX; i++) {
-            for (int j = 0; j < boardY; j++) {
+        board = new Block[boardX][boardY];
+        for (int x = 0; x < boardX; x++) {
+            for (int y = 0; y < boardY; y++) {
                 int randomColorIndex = Math.abs(rnd.nextInt() % COLORS.length);
-                board[i][j] = COLORS[randomColorIndex];
+                Block block = new Block();
+                block.color = COLORS[randomColorIndex];
+                block.x = x;
+                block.y = y;
+                block.visibleX = x;
+                block.visibleY = y;
+                board[x][y] = block;
             }
         }
     }
@@ -117,6 +126,6 @@ public class GameView extends View {
     }
 
     public interface GameManager {
-        int[][] resolveBoard(int clickedX, int clickedY, int[][] board);
+        Block[][] resolveBoard(int clickedX, int clickedY, Block[][] board);
     }
 }

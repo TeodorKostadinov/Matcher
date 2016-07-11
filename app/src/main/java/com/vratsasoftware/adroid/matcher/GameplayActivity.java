@@ -1,9 +1,7 @@
 package com.vratsasoftware.adroid.matcher;
 
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
 import com.vratsasoftware.adroid.matcher.Database.DatabaseHelper;
-import com.vratsasoftware.adroid.matcher.cmn.User;
-import com.vratsasoftware.adroid.matcher.game_logic.Block;
 import com.vratsasoftware.adroid.matcher.game_logic.GameHelper;
 
 public class GameplayActivity extends AppCompatActivity {
@@ -32,7 +27,6 @@ public class GameplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameplay);
-        Firebase.setAndroidContext(this);
 
         relative = (RelativeLayout) findViewById(R.id.relative);
         gameHelper = new GameHelper(relative);
